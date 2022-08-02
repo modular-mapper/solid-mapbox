@@ -44,11 +44,10 @@ const createLayerComponent = (type, handlers) => {
                     diff(style[target], prev[target]).forEach(([key, value]) => map().setLayoutProperty(id, key, value));
                 }
             });
-            if (style.minzoom && style.maxzoom && (style.minzoom !== prev.minzoom || style.maxzoom !== prev.maxzoom)) {
-                map().setLayerZoomRange(id, style.minzoom, style.maxzoom);
-            }
-            if (style.filter !== prev.filter)
-                map().setFilter(id, style.filter, { validate: false });
+            // if (style.minzoom && style.maxzoom && (style.minzoom !== prev.minzoom || style.maxzoom !== prev.maxzoom)) {
+            //   map().setLayerZoomRange(id, style.minzoom, style.maxzoom);
+            // }
+            // if (style.filter !== prev.filter) map().setFilter(id, style.filter, { validate: false });
             return style;
         }, style);
         // Update Visibility
@@ -58,27 +57,28 @@ const createLayerComponent = (type, handlers) => {
         //   return props.visible;
         // }, props.visible);
         // Update Filter
-        createEffect(async () => {
-            if (!props.filter)
-                return;
-            !map().isStyleLoaded() && (await map().once("styledata"));
-            map().setFilter(id, props.filter);
-        });
+        // createEffect(async () => {
+        //   if (!props.filter) return;
+        //   !map().isStyleLoaded() && (await map().once("styledata"));
+        //   map().setFilter(id, props.filter);
+        // });
         // Update Feature State
-        createEffect(async () => {
-            if (!props.featureState || !props.featureState.id)
-                return;
-            !map().isStyleLoaded() && (await map().once("styledata"));
-            map().removeFeatureState({
-                source: sourceId,
-                sourceLayer: props["source-layer"],
-            });
-            map().setFeatureState({
-                source: sourceId,
-                sourceLayer: props["source-layer"],
-                id: props.featureState.id,
-            }, props.featureState.state);
-        });
+        // createEffect(async () => {
+        //   if (!props.featureState || !props.featureState.id) return;
+        //   !map().isStyleLoaded() && (await map().once("styledata"));
+        //   map().removeFeatureState({
+        //     source: sourceId,
+        //     sourceLayer: props["source-layer"],
+        //   });
+        //   map().setFeatureState(
+        //     {
+        //       source: sourceId,
+        //       sourceLayer: props["source-layer"],
+        //       id: props.featureState.id,
+        //     },
+        //     props.featureState.state
+        //   );
+        // });
         return <></>;
     };
 };

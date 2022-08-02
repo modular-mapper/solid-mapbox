@@ -3,6 +3,7 @@ import { useMap } from "./map";
 import { useSourceId } from "./source";
 import { MappedEventHandlers } from "../utils";
 import type MBX from "mapbox-gl";
+import { LngLat } from "mapbox-gl";
 
 type LayerEventHandlers = MappedEventHandlers<MBX.MapLayerEventType>;
 type LayerType =
@@ -26,7 +27,7 @@ type LayerProps<T extends LayerImpl> = Omit<T, "type" | "id"> & {
 type LayerComponent<T extends LayerImpl> = Component<LayerProps<T>>;
 
 const createLayerComponent = <T extends LayerImpl>(
-  type: "raster" | "fill-extrusion" | "custom",
+  type: T["type"],
   handlers: {
     onadd?: (source: T) => void;
     onupdate?: (source: T) => void;
@@ -82,11 +83,11 @@ const createLayerComponent = <T extends LayerImpl>(
         }
       });
 
-      if (style.minzoom && style.maxzoom && (style.minzoom !== prev.minzoom || style.maxzoom !== prev.maxzoom)) {
-        map().setLayerZoomRange(id, style.minzoom, style.maxzoom);
-      }
+      // if (style.minzoom && style.maxzoom && (style.minzoom !== prev.minzoom || style.maxzoom !== prev.maxzoom)) {
+      //   map().setLayerZoomRange(id, style.minzoom, style.maxzoom);
+      // }
 
-      if (style.filter !== prev.filter) map().setFilter(id, style.filter, { validate: false });
+      // if (style.filter !== prev.filter) map().setFilter(id, style.filter, { validate: false });
 
       return style;
     }, style);
@@ -100,33 +101,33 @@ const createLayerComponent = <T extends LayerImpl>(
     // }, props.visible);
 
     // Update Filter
-    createEffect(async () => {
-      if (!props.filter) return;
+    // createEffect(async () => {
+    //   if (!props.filter) return;
 
-      !map().isStyleLoaded() && (await map().once("styledata"));
-      map().setFilter(id, props.filter);
-    });
+    //   !map().isStyleLoaded() && (await map().once("styledata"));
+    //   map().setFilter(id, props.filter);
+    // });
 
     // Update Feature State
-    createEffect(async () => {
-      if (!props.featureState || !props.featureState.id) return;
+    // createEffect(async () => {
+    //   if (!props.featureState || !props.featureState.id) return;
 
-      !map().isStyleLoaded() && (await map().once("styledata"));
+    //   !map().isStyleLoaded() && (await map().once("styledata"));
 
-      map().removeFeatureState({
-        source: sourceId,
-        sourceLayer: props["source-layer"],
-      });
+    //   map().removeFeatureState({
+    //     source: sourceId,
+    //     sourceLayer: props["source-layer"],
+    //   });
 
-      map().setFeatureState(
-        {
-          source: sourceId,
-          sourceLayer: props["source-layer"],
-          id: props.featureState.id,
-        },
-        props.featureState.state
-      );
-    });
+    //   map().setFeatureState(
+    //     {
+    //       source: sourceId,
+    //       sourceLayer: props["source-layer"],
+    //       id: props.featureState.id,
+    //     },
+    //     props.featureState.state
+    //   );
+    // });
 
     return <></>;
   };
