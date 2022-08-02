@@ -47,7 +47,7 @@
     "vitest": "^0.14.1"
   },
   "peerDependencies": {
-    "mapbox-gl": "^2.8.2",
-    "solid-js": "^1.4.3"
+    "mapbox-gl": "^2.9.2",
+    "solid-js": "^1.4.8"
   }
 }
