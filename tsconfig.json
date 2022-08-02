@@ -9,6 +9,7 @@
     "declarationDir": "./dist/types",
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
+    "types": ["solid-js"],
     "resolveJsonModule": true,
     "strict": true,
     "outDir": "./dist"
