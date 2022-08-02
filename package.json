@@ -3,7 +3,6 @@
   "private": true,
   "name": "solid-mapbox",
   "description": "A Mapbox API for SolidJS",
-  "homepage": "https://moduar/solid-map-gl",
   "author": "louisdutton",
   "contributors": [
     {
