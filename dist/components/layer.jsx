@@ -93,4 +93,5 @@ const diff = (current, prev) => {
 export const Layer = {
     Raster: createLayerComponent("raster", {}),
     FillExtrusion: createLayerComponent("fill-extrusion", {}),
+    Custom: createLayerComponent("custom", {}),
 };

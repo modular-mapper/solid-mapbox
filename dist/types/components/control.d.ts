@@ -14,10 +14,10 @@ interface ControlProps<T extends ControlType> extends ParentProps {
 }
 declare type ControlComponent<T extends ControlType> = Component<ControlProps<T>>;
 export declare const Control: {
-    Attribution: ControlComponent<"scale" | "navigation" | "attribution" | "fullscreen" | "geolocate">;
-    Navigation: ControlComponent<"scale" | "navigation" | "attribution" | "fullscreen" | "geolocate">;
-    Fullscreen: ControlComponent<"scale" | "navigation" | "attribution" | "fullscreen" | "geolocate">;
-    Geolocate: ControlComponent<"scale" | "navigation" | "attribution" | "fullscreen" | "geolocate">;
-    Scale: ControlComponent<"scale" | "navigation" | "attribution" | "fullscreen" | "geolocate">;
+    Attribution: ControlComponent<"navigation" | "scale" | "attribution" | "fullscreen" | "geolocate">;
+    Navigation: ControlComponent<"navigation" | "scale" | "attribution" | "fullscreen" | "geolocate">;
+    Fullscreen: ControlComponent<"navigation" | "scale" | "attribution" | "fullscreen" | "geolocate">;
+    Geolocate: ControlComponent<"navigation" | "scale" | "attribution" | "fullscreen" | "geolocate">;
+    Scale: ControlComponent<"navigation" | "scale" | "attribution" | "fullscreen" | "geolocate">;
 };
 export {};

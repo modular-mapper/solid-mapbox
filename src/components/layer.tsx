@@ -17,7 +17,7 @@ type LayerType =
   | "hillshade"
   | "sky";
 
-type LayerImpl = MBX.RasterLayer | MBX.FillExtrusionLayer;
+type LayerImpl = MBX.RasterLayer | MBX.FillExtrusionLayer | MBX.CustomLayerInterface;
 type LayerProps<T extends LayerImpl> = Omit<T, "type" | "id"> & {
   id?: string;
   before?: string;
@@ -26,7 +26,7 @@ type LayerProps<T extends LayerImpl> = Omit<T, "type" | "id"> & {
 type LayerComponent<T extends LayerImpl> = Component<LayerProps<T>>;
 
 const createLayerComponent = <T extends LayerImpl>(
-  type: "raster" | "fill-extrusion",
+  type: "raster" | "fill-extrusion" | "custom",
   handlers: {
     onadd?: (source: T) => void;
     onupdate?: (source: T) => void;
@@ -144,4 +144,5 @@ const diff = <T,>(current: T, prev: T) => {
 export const Layer = {
   Raster: createLayerComponent<MBX.RasterLayer>("raster", {}),
   FillExtrusion: createLayerComponent<MBX.FillExtrusionLayer>("fill-extrusion", {}),
+  Custom: createLayerComponent<MBX.CustomLayerInterface>("custom", {}),
 };
