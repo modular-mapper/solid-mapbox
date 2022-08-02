@@ -20,7 +20,7 @@
   ],
   "license": "MIT",
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/index.jsx",
   "types": "dist/types/index.d.ts",
   "scripts": {
     "build": "tsc",
