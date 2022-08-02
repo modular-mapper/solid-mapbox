@@ -1,0 +1,107 @@
+import { NestedKeys } from "./utils";
+export declare const VECTOR_STYLES: {
+    mb: {
+        light: string;
+        dark: string;
+        street: string;
+        outdoor: string;
+        sat: string;
+        "sat-street": string;
+        nav: string;
+        "nav-night": string;
+        basic: string;
+        monochrome: string;
+        leshine: string;
+        icecream: string;
+        cali: string;
+        northstar: string;
+        mineral: string;
+        moonlight: string;
+        frank: string;
+        minimo: string;
+        decimal: string;
+        standard: string;
+        blueprint: string;
+        bubble: string;
+        pencil: string;
+    };
+    gitbase: {
+        "swiss-ski": string;
+        vintage: string;
+        whaam: string;
+        neon: string;
+        camoflauge: string;
+        emerald: string;
+        runner: string;
+        "x-ray": string;
+    };
+    esri: {
+        blueprint: string;
+        "charted-territory": string;
+        "colored-pencil": string;
+        community: string;
+        "mid-century": string;
+        "modern-antique": string;
+        "nat-geo": string;
+        newspaper: string;
+        "open-street-map": string;
+        "light-gray-canvas": string;
+        "dark-gray-canvas": string;
+        "human-geo-light": string;
+        "human-geo-dark": string;
+        "world-navigation": string;
+        "world-street": string;
+        "world-street_night": string;
+        "world-terrain": string;
+        "world-terrain-hybrid": string;
+        "world-topographic": string;
+        chromium: string;
+        dreamcatcher: string;
+        seahaven: string;
+        sangria: string;
+        mercurial: string;
+        imagery: string;
+        "imagery-hybrid": string;
+        firefly: string;
+        "firefly-hybrid": string;
+        oceans: string;
+    };
+};
+export declare const RASTER_STYLES: {
+    osm: {
+        org: string;
+        human: string;
+        cycle: string;
+        topo: string;
+        _copy: string;
+    };
+    carto: {
+        voyager: string;
+        positron: string;
+        dark: string;
+        _copy: string;
+    };
+    stamen: {
+        toner: string;
+        toner_lite: string;
+        watercolor: string;
+        terrain: string;
+        _copy: string;
+    };
+    tf: {
+        cycle: string;
+        trans: string;
+        trans_dark: string;
+        landscape: string;
+        outdoors: string;
+        neighbourhood: string;
+        spinal: string;
+        pioneer: string;
+        atlas: string;
+        mobile: string;
+        _copy: string;
+    };
+};
+export declare type VectorStyle = NestedKeys<typeof VECTOR_STYLES>;
+export declare type RasterStyle = NestedKeys<typeof RASTER_STYLES>;
+export declare type MapStyle = VectorStyle | RasterStyle | (string & {});
