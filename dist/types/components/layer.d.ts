@@ -1,18 +1,13 @@
-import { Component } from "solid-js";
-import type MBX from "mapbox-gl";
-declare type LayerImpl = MBX.RasterLayer | MBX.FillExtrusionLayer | MBX.CustomLayerInterface;
-declare type LayerProps<T extends LayerImpl> = Omit<T, "type" | "id"> & {
-    id?: string;
+import mapboxgl from "mapbox-gl";
+declare type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+declare type MapUnion<T, K extends keyof T> = T extends any ? PartialBy<T, K> : never;
+declare type LayerType = MapUnion<mapboxgl.AnyLayer, "id">;
+declare type LayerProps = {
     before?: string;
     featureState?: {
         id: number | string;
         state: object;
     };
 };
-declare type LayerComponent<T extends LayerImpl> = Component<LayerProps<T>>;
-export declare const Layer: {
-    Raster: LayerComponent<MBX.RasterLayer>;
-    FillExtrusion: LayerComponent<MBX.FillExtrusionLayer>;
-    Custom: LayerComponent<MBX.CustomLayerInterface>;
-};
+export declare const Layer: <T extends LayerType>(props: T & LayerProps) => import("solid-js").JSX.Element;
 export {};
