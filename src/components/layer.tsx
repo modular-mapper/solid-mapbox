@@ -1,24 +1,10 @@
-import { onCleanup, createEffect, Component, createUniqueId, onMount, splitProps } from "solid-js";
+import { onCleanup, createEffect, createUniqueId, onMount, splitProps } from "solid-js";
 import { useMap } from "./map";
 import { useSourceId } from "./source";
 import { MappedEventHandlers } from "../utils";
 import mapboxgl from "mapbox-gl";
 
 type LayerEventHandlers = MappedEventHandlers<mapboxgl.MapLayerEventType>;
-
-type LayerMap = {
-  "raster": mapboxgl.RasterLayer;
-  "fill-extrusion": mapboxgl.FillExtrusionLayer;
-  "line": mapboxgl.LineLayer;
-  "fill": mapboxgl.FillLayer;
-  "symbol": mapboxgl.SymbolLayer;
-  "background": mapboxgl.BackgroundLayer;
-  "circle": mapboxgl.CircleLayer;
-  "heatmap": mapboxgl.HeatmapLayer;
-  "hillshade": mapboxgl.HillshadeLayer;
-  "sky": mapboxgl.SkyLayer;
-  "custom": mapboxgl.CustomLayerInterface;
-};
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 type MapUnion<T, K extends keyof T> = T extends any ? PartialBy<T, K> : never;
