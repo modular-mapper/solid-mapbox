@@ -34,8 +34,8 @@ const createSourceComponent = <T extends SourceImpl, I extends MBX.AnySourceData
     // Add
     onMount(() => {
       handlers.onadd && handlers.onadd(data());
-      if (type === "geojson") return;
-      !sourceExists() && map().addSource(id, data());
+      const src = type === "geojson" ? { type: data().type } : data();
+      !sourceExists() && map().addSource(id, src);
     });
 
     // Update
