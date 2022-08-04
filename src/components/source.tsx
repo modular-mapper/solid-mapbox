@@ -9,15 +9,23 @@ import {
   ParentProps,
 } from "solid-js";
 import { useMap } from "./map";
-import type MBX from "mapbox-gl";
+import type mapboxgl from "mapbox-gl";
 
-type SourceImpl = MBX.GeoJSONSourceRaw | MBX.VectorSource | MBX.RasterSource;
+type SourceImpl = mapboxgl.GeoJSONSourceRaw | mapboxgl.VectorSource | mapboxgl.RasterSource;
 type SourceComponent<T extends SourceImpl> = Component<Omit<T, "type"> & ParentProps>;
+
+const DEFAULT_GEOJSON: mapboxgl.GeoJSONSourceRaw = {
+  type: "geojson",
+  data: {
+    features: [],
+    type: "FeatureCollection",
+  },
+};
 
 const SourceContext = createContext("");
 export const useSourceId = () => useContext(SourceContext);
 
-const createSourceComponent = <T extends SourceImpl, I extends MBX.AnySourceData = T>(
+const createSourceComponent = <T extends SourceImpl, I extends mapboxgl.AnySourceData = T>(
   type: "raster" | "geojson" | "vector",
   handlers: {
     onadd?: (data: T) => void;
@@ -34,7 +42,7 @@ const createSourceComponent = <T extends SourceImpl, I extends MBX.AnySourceData
     // Add
     onMount(() => {
       handlers.onadd && handlers.onadd(data());
-      const src = type === "geojson" ? { type: data().type } : data();
+      const src = type === "geojson" ? DEFAULT_GEOJSON : data();
       !sourceExists() && map().addSource(id, src);
     });
 
@@ -59,7 +67,7 @@ const createSourceComponent = <T extends SourceImpl, I extends MBX.AnySourceData
 };
 
 export const Source = {
-  Raster: createSourceComponent<MBX.RasterSource>("raster", {
+  Raster: createSourceComponent<mapboxgl.RasterSource>("raster", {
     onupdate(src) {
       if (src.url || src.tiles) {
         // src.tiles && (src.tiles = ["a", "b", "c"].map((i) => src.tiles[0].replace("{s}", i)));
@@ -71,11 +79,11 @@ export const Source = {
     },
   }),
 
-  Vector: createSourceComponent<MBX.VectorSource, MBX.VectorSourceImpl>("vector", {
+  Vector: createSourceComponent<mapboxgl.VectorSource, mapboxgl.VectorSourceImpl>("vector", {
     onupdate: (config, src) => (config.url ? src.setUrl(config.url) : src.tiles && src.setTiles(src.tiles)),
   }),
 
-  GeoJSON: createSourceComponent<MBX.GeoJSONSourceRaw, MBX.GeoJSONSource>("geojson", {
+  GeoJSON: createSourceComponent<mapboxgl.GeoJSONSourceRaw, mapboxgl.GeoJSONSource>("geojson", {
     onupdate: (config, src) => config.data && src.setData(config.data),
   }),
 };
