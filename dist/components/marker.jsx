@@ -4,11 +4,20 @@ import mapboxgl from "mapbox-gl";
 export const Marker = (props) => {
     const map = useMap();
     let marker;
+    //TODO overhaul Marker system
+    /*
+      <marker>
+        {markerStuff}
+        <popup>
+          {popupStuff}
+        </popup>
+      </marker>
+    */
     // Add Marker
     createEffect(() => {
-        marker = new mapboxgl.Marker(props.options)
+        marker = new mapboxgl.Marker({ ...props.options, element: props.children })
             .setLngLat(props.lngLat)
-            .setPopup(props.children ? new mapboxgl.Popup().setDOMContent((<div>{props.children}</div>)) : undefined)
+            .setPopup(props.popUp ? new mapboxgl.Popup({ offset: 20 }).setDOMContent((props.popUp)) : undefined)
             .addTo(map());
     });
     // Remove Marker
