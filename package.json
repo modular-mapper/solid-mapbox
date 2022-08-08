@@ -30,7 +30,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "test": "vitest",
-    "release": "yarn build && npm version && npm publish"
+    "release": "yarn test && yarn build && npm version && npm publish"
   },
   "repository": {
     "type": "git",
