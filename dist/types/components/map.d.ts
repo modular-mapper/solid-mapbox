@@ -13,7 +13,7 @@ export declare type Viewport = {
     pitch?: number;
     bearing?: number;
 };
-export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps>, MapEventHandlers {
+export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps>, Partial<MapEventHandlers> {
     style?: ComponentProps<"div">["style"];
     /** Current Map View */
     viewport: Viewport;
