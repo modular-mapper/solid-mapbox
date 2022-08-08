@@ -13,7 +13,7 @@ import {
 import MBX from "mapbox-gl";
 import { MappedEventHandlers } from "../utils";
 import type { ComponentProps, Component } from "solid-js";
-// import "mapbox-gl/dist/mapbox-gl.css";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 type TransitionType = "flyTo" | "easeTo" | "jumpTo";
 type ContainerProps = "id" | "class" | "classList" | "ref" | "children";
@@ -94,8 +94,6 @@ export const MapBox: Component<MapProps> = (props) => {
     });
 
     map.once("load").then(() => setMapbox(map));
-
-    // onCleanup(() => map.remove());
 
     // Listen to map container size changes
     const resizeObserver = new ResizeObserver(() => map.resize());
