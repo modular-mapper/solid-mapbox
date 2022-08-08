@@ -4,7 +4,7 @@ import { MappedEventHandlers } from "../utils";
 import type { ComponentProps, Component } from "solid-js";
 declare type TransitionType = "flyTo" | "easeTo" | "jumpTo";
 declare type ContainerProps = "id" | "class" | "classList" | "ref" | "children";
-declare type MapEventHandlers = MappedEventHandlers<MBX.MapLayerEventType>;
+declare type MapEventHandlers = MappedEventHandlers<MBX.MapEventType>;
 export declare type Viewport = {
     id?: string;
     center?: MBX.LngLatLike;

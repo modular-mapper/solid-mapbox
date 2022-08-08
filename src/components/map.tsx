@@ -17,7 +17,7 @@ import type { ComponentProps, Component } from "solid-js";
 
 type TransitionType = "flyTo" | "easeTo" | "jumpTo";
 type ContainerProps = "id" | "class" | "classList" | "ref" | "children";
-type MapEventHandlers = MappedEventHandlers<MBX.MapLayerEventType>;
+type MapEventHandlers = MappedEventHandlers<MBX.MapEventType>;
 
 export type Viewport = {
   id?: string;
