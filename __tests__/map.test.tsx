@@ -1,1 +1,0 @@
-import { MapBox } from "../src";

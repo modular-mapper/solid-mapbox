@@ -22,7 +22,7 @@
   "main": "dist/index.jsx",
   "types": "dist/types/index.d.ts",
   "files": [
-    "/lib",
+    "/dist",
     "LICENSE.md",
     "README.md"
   ],
@@ -30,7 +30,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "test": "vitest",
-    "release": "yarn test && yarn build && npm version && npm publish"
+    "release": "yarn build && npm version && npm publish"
   },
   "repository": {
     "type": "git",
