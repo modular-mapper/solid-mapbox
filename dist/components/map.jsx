@@ -142,7 +142,7 @@ export const MapBox = (props) => {
     return (<>
       <Show when={mapbox()}>
         <MapContext.Provider value={mapbox}>
-          <div style={{ position: "relative", "z-index": 10 }}>{props.children}</div>
+          <div style={{ position: "relative", "z-index": 10, width: "100%", height: "100%" }}>{props.children}</div>
         </MapContext.Provider>
       </Show>
       <div ref={container} id={props.id} class={props.class} classList={props.classList} style={{ position: "absolute", inset: 0, ...props.style }}/>
