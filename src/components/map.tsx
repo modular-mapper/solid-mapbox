@@ -11,7 +11,6 @@ import {
   Show,
 } from "solid-js";
 import MBX from "mapbox-gl";
-import { MapStyle, VECTOR_STYLES } from "../map-styles";
 import { MappedEventHandlers } from "../utils";
 import type { ComponentProps, Component } from "solid-js";
 // import "mapbox-gl/dist/mapbox-gl.css";
@@ -33,7 +32,7 @@ export type Viewport = {
 //   style?: MapStyle;
 // }
 
-export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps> {
+export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps>, MapEventHandlers {
   style?: ComponentProps<"div">["style"];
   /** Current Map View */
   viewport: Viewport;

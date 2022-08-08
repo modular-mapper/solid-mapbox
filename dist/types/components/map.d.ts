@@ -1,8 +1,10 @@
 import { Accessor } from "solid-js";
 import MBX from "mapbox-gl";
+import { MappedEventHandlers } from "../utils";
 import type { ComponentProps, Component } from "solid-js";
 declare type TransitionType = "flyTo" | "easeTo" | "jumpTo";
 declare type ContainerProps = "id" | "class" | "classList" | "ref" | "children";
+declare type MapEventHandlers = MappedEventHandlers<MBX.MapLayerEventType>;
 export declare type Viewport = {
     id?: string;
     center?: MBX.LngLatLike;
@@ -11,7 +13,7 @@ export declare type Viewport = {
     pitch?: number;
     bearing?: number;
 };
-export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps> {
+export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps>, MapEventHandlers {
     style?: ComponentProps<"div">["style"];
     /** Current Map View */
     viewport: Viewport;
