@@ -1,5 +1,12 @@
 import { onCleanup, createEffect, createContext, useContext, createUniqueId, onMount, } from "solid-js";
 import { useMap } from "./map";
+const DEFAULT_GEOJSON = {
+    type: "geojson",
+    data: {
+        features: [],
+        type: "FeatureCollection",
+    },
+};
 const SourceContext = createContext("");
 export const useSourceId = () => useContext(SourceContext);
 const createSourceComponent = (type, handlers) => {
@@ -11,7 +18,7 @@ const createSourceComponent = (type, handlers) => {
         // Add
         onMount(() => {
             handlers.onadd && handlers.onadd(data());
-            const src = type === "geojson" ? { type: data().type } : data();
+            const src = type === "geojson" ? DEFAULT_GEOJSON : data();
             !sourceExists() && map().addSource(id, src);
         });
         // Update
