@@ -223,7 +223,7 @@ export const MapBox: Component<MapProps> = (props) => {
     <>
       <Show when={mapbox()}>
         <MapContext.Provider value={mapbox as Accessor<MBX.Map>}>
-          <div style={{ position: "absolute", "z-index": 10 }}>{props.children}</div>
+          <div style={{ position: "relative", "z-index": 10 }}>{props.children}</div>
         </MapContext.Provider>
       </Show>
       <div
