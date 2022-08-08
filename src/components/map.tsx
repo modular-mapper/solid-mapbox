@@ -9,6 +9,7 @@ import {
   untrack,
   Accessor,
   Show,
+  JSX,
 } from "solid-js";
 import MBX from "mapbox-gl";
 import { MappedEventHandlers } from "../utils";
@@ -106,8 +107,8 @@ export const MapBox: Component<MapProps> = (props) => {
       (Object.keys(props).filter((key) => key.startsWith("on")) as (keyof MapProps)[]).forEach((key) => {
         const event = key.slice(2).toLowerCase() as keyof MBX.MapEventType;
         const callback = props[key] as MBX.MapEventType[typeof event];
-        map.on(event, callback);
-        onCleanup(() => map.off(event, callback));
+        map.on(event, callback as any);
+        onCleanup(() => map.off(event, callback as any));
       });
     });
 
@@ -121,7 +122,7 @@ export const MapBox: Component<MapProps> = (props) => {
 
     // Update cursor
     createEffect((prev) => {
-      if (props.cursorStyle === prev) return;
+      if (props.cursorStyle === prev || props.cursorStyle === undefined) return;
       debug("Update Cursor to", props.cursorStyle);
       map.getCanvas().style.cursor = props.cursorStyle;
       return props.cursorStyle;
@@ -129,19 +130,19 @@ export const MapBox: Component<MapProps> = (props) => {
 
     //Update transition type
     createEffect((prev) => {
-      if (props.transitionType === prev) return;
+      if (props.transitionType === prev || props.transitionType === undefined) return;
       debug("Update Transition to", props.transitionType);
       setTransitionType(props.transitionType);
       return props.transitionType;
     });
 
     // Update projection
-    createEffect((prev?: MBX.MapboxOptions["projection"]) => {
-      if (props.options?.projection === prev || !props.options?.projection) return;
-      debug("Update Projection to", props.options.projection.name);
-      map.setProjection(props.options.projection);
-      return props.options.projection;
-    });
+    // createEffect((prev?: MBX.MapboxOptions["projection"]) => {
+    //   if (props.options?.projection === prev || !props.options?.projection) return;
+    //   debug("Update Projection to", props.options.projection.name);
+    //   map.setProjection(props.options.projection);
+    //   return props.options.projection;
+    // });
 
     // Update map style
     createEffect((prev) => {
@@ -226,7 +227,7 @@ export const MapBox: Component<MapProps> = (props) => {
         id={props.id}
         class={props.class}
         classList={props.classList}
-        style={{ position: "absolute", inset: 0, ...props.style }}
+        style={{ position: "absolute", inset: 0, ...(props.style as JSX.CSSProperties) }}
       />
     </>
   );

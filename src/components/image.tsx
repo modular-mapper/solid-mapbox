@@ -1,22 +1,29 @@
 import { onCleanup, createEffect, Component } from "solid-js";
 import { useMap } from "./map";
-import type { ImageSourceOptions } from "mapbox-gl";
+
+type Image =
+  | HTMLImageElement
+  | ImageBitmap
+  | ImageData
+  | ArrayBufferView
+  | {
+      width: number;
+      height: number;
+      data: Uint8Array | Uint8ClampedArray;
+    };
 
 export const Image: Component<{
   id: string;
   url?: string;
-  image?:
-    | HTMLImageElement
-    | ImageBitmap
-    | ImageData
-    | { width: number; height: number; data: Uint8Array | Uint8ClampedArray };
-  options?: ImageSourceOptions;
+  image: Image;
+  options?: { pixelRatio?: number | undefined; sdf?: boolean | undefined };
 }> = (props) => {
   const map = useMap();
   // Add Image
   createEffect(() => {
+    if (!props.image) return;
     if (props.url) {
-      map().loadImage(props.url, (_, image) => !map().hasImage(props.id) && map().addImage(props.id, image));
+      map().loadImage(props.url, (_, image) => !map().hasImage(props.id) && map().addImage(props.id, props.image));
     } else {
       !map().hasImage(props.id) && map().addImage(props.id, props.image, props.options);
     }
@@ -32,10 +39,10 @@ export const Image: Component<{
     if (props.url) {
       map().loadImage(props.url, (error, image) => {
         if (error) throw error;
-        !map().hasImage(props.id) && map().updateImage(props.id, image);
+        !map().hasImage(props.id) && map().updateImage(props.id, props.image);
       });
     } else {
-      map().style && map().hasImage(props.id) && map().updateImage(props.id, props.image);
+      map().getStyle() && map().hasImage(props.id) && map().updateImage(props.id, props.image);
     }
   });
 

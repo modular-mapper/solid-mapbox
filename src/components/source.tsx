@@ -32,9 +32,9 @@ const createSourceComponent = <T extends SourceImpl, I extends mapboxgl.AnySourc
     onupdate?: (data: T, src: I) => void;
     onremove?: (data: T, src: I) => void;
   }
-): SourceComponent<T> => {
+): SourceComponent<T & { id?: string }> => {
   return (props) => {
-    const id = props.id || createUniqueId();
+    const id = props.id ?? createUniqueId();
     const map = useMap();
     const sourceExists = () => map().getSource(id) !== undefined;
     const data = () => ({ ...props, type } as T);
