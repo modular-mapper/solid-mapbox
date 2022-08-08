@@ -1,7 +1,6 @@
 {
   "version": "0.1.0",
-  "private": true,
-  "name": "solid-mapbox",
+  "name": "@modular-mapper/solid-mapbox",
   "description": "A Mapbox API for SolidJS",
   "author": "louisdutton",
   "contributors": [
@@ -22,10 +21,16 @@
   "type": "module",
   "main": "dist/index.jsx",
   "types": "dist/types/index.d.ts",
+  "files": [
+    "/lib",
+    "LICENSE.md",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "test": "vitest"
+    "test": "vitest",
+    "release": "yarn build && npm version && npm publish"
   },
   "repository": {
     "type": "git",
