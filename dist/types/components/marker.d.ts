@@ -4,4 +4,5 @@ export declare const Marker: Component<{
     options?: MarkerOptions;
     lngLat: LngLatLike;
     children?: any;
+    popUp?: Element;
 }>;
