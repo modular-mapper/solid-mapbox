@@ -30,7 +30,9 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "test": "vitest",
-    "release": "yarn build && npm version && npm publish"
+    "release:patch": "yarn build && npm version patch && npm publish",
+    "release:minor": "yarn build && npm version minor && npm publish",
+    "release:major": "yarn build && npm version major && npm publish"
   },
   "repository": {
     "type": "git",
