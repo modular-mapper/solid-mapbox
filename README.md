@@ -1,8 +1,3 @@
----
-description: A SolidJS API for Mapbox GL JS.
-layout: landing
----
-
 # Solid Mapbox
 
 A SolidJS API for Mapbox GL JS.
