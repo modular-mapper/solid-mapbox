@@ -22,7 +22,7 @@ const DEFAULT_GEOJSON: mapboxgl.GeoJSONSourceRaw = {
 const SourceContext = createContext("");
 export const useSourceId = () => useContext(SourceContext);
 
-const Source: Component<mapboxgl.AnySourceData & ParentProps> = (props) => {
+export const Source: Component<mapboxgl.AnySourceData & ParentProps> = (props) => {
   const id = "id" in props && props.id ? props.id : createUniqueId();
   const map = useMap();
   const sourceExists = () => map().getSource(id) !== undefined;
@@ -61,5 +61,3 @@ const Source: Component<mapboxgl.AnySourceData & ParentProps> = (props) => {
 
   return <SourceContext.Provider value={id}>{props.children}</SourceContext.Provider>;
 };
-
-export default Source;
