@@ -45,8 +45,8 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
     (Object.keys(props).filter((key) => key.startsWith("on")) as (keyof LayerProps)[]).forEach((key) => {
       const event = key.slice(2).toLowerCase() as keyof mapboxgl.MapLayerEventType;
       const callback = props[key] as any;
-      map().on(event, callback);
-      onCleanup(() => map().off(event, callback));
+      map().on(event, id, callback);
+      onCleanup(() => map().off(event, id, callback));
     });
   });
 
