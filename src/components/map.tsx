@@ -11,19 +11,19 @@ import {
   Show,
   JSX,
 } from "solid-js";
-import MBX from "mapbox-gl";
+import mapboxgl from "mapbox-gl";
 import { MappedEventHandlers } from "../utils";
 import type { ComponentProps, Component } from "solid-js";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 type TransitionType = "flyTo" | "easeTo" | "jumpTo";
 type ContainerProps = "id" | "class" | "classList" | "ref" | "children";
-type MapEventHandlers = MappedEventHandlers<MBX.MapEventType>;
+type MapEventHandlers = MappedEventHandlers<mapboxgl.MapEventType>;
 
 export type Viewport = {
   id?: string;
-  center?: MBX.LngLatLike;
-  bounds?: MBX.LngLatBounds;
+  center?: mapboxgl.LngLatLike;
+  bounds?: mapboxgl.LngLatBounds;
   zoom?: number;
   pitch?: number;
   bearing?: number;
@@ -40,7 +40,7 @@ export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps>, P
   /** Mapbox Options
    * @see https://docs.mapbox.com/mapbox-gl-js/api/map/#map-parameters
    */
-  options?: Omit<MBX.MapboxOptions, "container">;
+  options?: Omit<mapboxgl.MapboxOptions, "container">;
   /** Type for pan, move and zoom transitions */
   transitionType?: TransitionType;
   /** Event listener for Viewport updates */
@@ -58,21 +58,21 @@ export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps>, P
   /** Mouse Cursor Style */
   cursorStyle?: string;
   /** Dark Map Style */
-  darkStyle?: MBX.StyleOptions | string;
+  darkStyle?: mapboxgl.StyleOptions | string;
   /** Disable automatic map resize */
   disableResize?: boolean;
   /** Debug Mode */
   debug?: boolean;
 }
 
-const MapContext = createContext((() => {}) as Accessor<MBX.Map>);
+const MapContext = createContext((() => {}) as Accessor<mapboxgl.Map>);
 /** Provides the Mapbox Map Object */
 export const useMap = () => useContext(MapContext);
 
 /** Creates a new Map Container */
 export const MapBox: Component<MapProps> = (props) => {
   props.id = props.id || createUniqueId();
-  const [mapbox, setMapbox] = createSignal<MBX.Map>();
+  const [mapbox, setMapbox] = createSignal<mapboxgl.Map>();
   const [transitionType, setTransitionType] = createSignal<TransitionType>("flyTo");
 
   const debug = (text: string, value: unknown) => props.debug && console.debug(`${text}: %c${value}`, "color: #00F");
@@ -86,7 +86,7 @@ export const MapBox: Component<MapProps> = (props) => {
   // };
 
   onMount(() => {
-    const map = new MBX.Map({
+    const map = new mapboxgl.Map({
       ...props.options,
       ...props.viewport,
       container,
@@ -105,10 +105,10 @@ export const MapBox: Component<MapProps> = (props) => {
     // Hook up events
     createEffect(() => {
       (Object.keys(props).filter((key) => key.startsWith("on")) as (keyof MapProps)[]).forEach((key) => {
-        const event = key.slice(2).toLowerCase() as keyof MBX.MapEventType;
-        const callback = props[key] as MBX.MapEventType[typeof event];
-        map.on(event, callback as any);
-        onCleanup(() => map.off(event, callback as any));
+        const event = key.slice(2).toLowerCase() as keyof mapboxgl.MapEventType;
+        const callback = props[key] as any;
+        map.on(event, callback);
+        onCleanup(() => map.off(event, callback));
       });
     });
 
@@ -150,7 +150,7 @@ export const MapBox: Component<MapProps> = (props) => {
       const style = props.options?.style;
       if (style === prev) return;
 
-      let oldLayers: MBX.AnyLayer[] = [];
+      let oldLayers: mapboxgl.AnyLayer[] = [];
       let oldSources = {};
       debug("Update Mapstyle to", style);
       if (map.isStyleLoaded()) {
@@ -184,12 +184,12 @@ export const MapBox: Component<MapProps> = (props) => {
         bounds: props.viewport.bounds,
       };
 
-      const onMove = (event: MBX.MapboxEvent) => {
+      const onMove = (event: mapboxgl.MapboxEvent) => {
         if (event.originalEvent) props.onViewportChange && props.onViewportChange({ ...viewport, id: props.id });
         setTransitionType("jumpTo");
       };
 
-      const onMoveEnd = (event: MBX.MapboxEvent) => {
+      const onMoveEnd = (event: mapboxgl.MapboxEvent) => {
         if (event.originalEvent) props.onViewportChange && props.onViewportChange(viewport);
         if (props.transitionType) setTransitionType(props.transitionType);
       };
@@ -220,7 +220,7 @@ export const MapBox: Component<MapProps> = (props) => {
   return (
     <>
       <Show when={mapbox()}>
-        <MapContext.Provider value={mapbox as Accessor<MBX.Map>}>{props.children}</MapContext.Provider>
+        <MapContext.Provider value={mapbox as Accessor<mapboxgl.Map>}>{props.children}</MapContext.Provider>
       </Show>
       <div
         ref={container}

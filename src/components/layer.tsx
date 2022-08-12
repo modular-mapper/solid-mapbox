@@ -10,16 +10,17 @@ type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 type MapUnion<T, K extends keyof T> = T extends any ? PartialBy<T, K> : never;
 type LayerType = MapUnion<mapboxgl.AnyLayer, "id">;
 
-type LayerProps = {
+interface LayerProps extends Partial<LayerEventHandlers> {
   before?: string;
   featureState?: { id: number | string; state: object };
-};
+  filter?: any[];
+}
 
 export const Layer = <T extends LayerType>(props: T & LayerProps) => {
-  const [_, style] = splitProps(props, ["before", "featureState"]) as [any, T];
+  const [_, style] = splitProps(props, ["before", "featureState", "filter"]) as [any, T];
   const id = props.id || createUniqueId();
   const map = useMap();
-  const sourceId = useSourceId();
+  const source = useSourceId();
   const layerExists = () => map().getLayer(id) !== undefined;
 
   // Add Layer
@@ -30,7 +31,7 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
       {
         ...style,
         id,
-        source: sourceId,
+        source,
       } as mapboxgl.AnyLayer,
       props.before
     );
@@ -40,20 +41,18 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
   onCleanup(() => layerExists() && map().removeLayer(id));
 
   // Hook up events
-  // createEffect(() =>
-  //   layerEvents.forEach((item) => {
-  //     if (props[item]) {
-  //       const event = item.slice(2).toLowerCase();
-  //       const callback = (e) => props[item](e);
-  //       map()?.on(event, props.id, callback);
-  //       onCleanup(() => map()?.off(event, props.id, callback));
-  //     }
-  //   })
-  // );
+  createEffect(() => {
+    (Object.keys(props).filter((key) => key.startsWith("on")) as (keyof LayerProps)[]).forEach((key) => {
+      const event = key.slice(2).toLowerCase() as keyof mapboxgl.MapLayerEventType;
+      const callback = props[key] as any;
+      map().on(event, callback);
+      onCleanup(() => map().off(event, callback));
+    });
+  });
 
   // Update Style
   createEffect((prev?: typeof style) => {
-    if (!style || !map().getStyle() || !map().getSource(sourceId) || !layerExists()) return;
+    if (!style || !map().getStyle() || !map().getSource(source) || !layerExists()) return;
     if (!prev) return style;
 
     if (style.type !== "custom" && prev.type !== "custom") {
@@ -63,12 +62,10 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
         }
       });
 
-      if (style.minzoom && style.maxzoom && (style.minzoom !== prev.minzoom || style.maxzoom !== prev.maxzoom)) {
-        map().setLayerZoomRange(id, style.minzoom, style.maxzoom);
+      if (style.minzoom !== prev.minzoom || style.maxzoom !== prev.maxzoom) {
+        map().setLayerZoomRange(id, style.minzoom ?? 0, style.maxzoom ?? 22);
       }
     }
-
-    // if (style.filter !== prev.filter) map().setFilter(id, style.filter, { validate: false });
 
     return style;
   }, style);
@@ -82,33 +79,32 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
   // }, props.visible);
 
   // Update Filter
-  // createEffect(async () => {
-  //   if (!props.filter) return;
+  createEffect(async () => {
+    if (!props.filter) return;
 
-  //   !map().isStyleLoaded() && (await map().once("styledata"));
-  //   map().setFilter(id, props.filter);
-  // });
+    !map().isStyleLoaded() && (await map().once("styledata"));
+    map().setFilter(id, props.filter);
+  });
 
   // Update Feature State
-  // createEffect(async () => {
-  //   if (!props.featureState || !props.featureState.id) return;
+  createEffect(async () => {
+    if (!props.featureState || !props.featureState.id) return;
 
-  //   !map().isStyleLoaded() && (await map().once("styledata"));
+    // await style if necessary
+    !map().isStyleLoaded() && (await map().once("styledata"));
 
-  //   map().removeFeatureState({
-  //     source: sourceId,
-  //     sourceLayer: props["source-layer"],
-  //   });
+    const sourceLayer = "source-layer" in props ? props["source-layer"] : undefined;
 
-  //   map().setFeatureState(
-  //     {
-  //       source: sourceId,
-  //       sourceLayer: props["source-layer"],
-  //       id: props.featureState.id,
-  //     },
-  //     props.featureState.state
-  //   );
-  // });
+    map().removeFeatureState({ source, sourceLayer });
+    map().setFeatureState(
+      {
+        source: source,
+        sourceLayer,
+        id: props.featureState.id,
+      },
+      props.featureState.state
+    );
+  });
 
   return <></>;
 };
