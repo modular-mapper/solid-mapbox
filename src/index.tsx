@@ -8,5 +8,3 @@ export { Control } from "./components/control";
 export { Marker } from "./components/marker";
 export { Popup } from "./components/popup";
 export { Image } from "./components/image";
-// export { Camera } from "./components/camera";
-export type { Viewport } from "./components/map";
