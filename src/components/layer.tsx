@@ -12,7 +12,7 @@ type LayerType = mapboxgl.AnyLayer;
 
 interface LayerProps extends Partial<LayerEventHandlers> {
   before?: string;
-  featureState?: { id: number | string; state: object };
+  featureState?: { id?: number | string; state: object };
   filter?: any[];
 }
 
@@ -87,7 +87,7 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
 
   // Update Feature State
   createEffect(async () => {
-    if (!props.featureState || !props.featureState.id) return;
+    if (!props.featureState || !props.featureState.id || source === "") return;
 
     // await style if necessary
     !map().isStyleLoaded() && (await map().once("styledata"));
