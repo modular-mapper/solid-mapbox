@@ -1,13 +1,4 @@
-import {
-  onCleanup,
-  createEffect,
-  Component,
-  createContext,
-  useContext,
-  createUniqueId,
-  onMount,
-  ParentProps,
-} from "solid-js";
+import { onCleanup, createEffect, Component, createContext, useContext, onMount, ParentProps } from "solid-js";
 import { useMap } from "./map";
 import type mapboxgl from "mapbox-gl";
 
@@ -22,21 +13,20 @@ const DEFAULT_GEOJSON: mapboxgl.GeoJSONSourceRaw = {
 const SourceContext = createContext("");
 export const useSourceId = () => useContext(SourceContext);
 
-export const Source: Component<mapboxgl.AnySourceData & ParentProps> = (props) => {
-  const id = "id" in props && props.id ? props.id : createUniqueId();
+export const Source: Component<mapboxgl.AnySourceData & ParentProps & { id: string }> = (props) => {
   const map = useMap();
-  const sourceExists = () => map().getSource(id) !== undefined;
+  const sourceExists = () => map().getSource(props.id) !== undefined;
 
   // Add
   onMount(() => {
     const { children, ...args } = props;
     const data = props.type === "geojson" ? DEFAULT_GEOJSON : args;
-    !sourceExists() && map().addSource(id, data);
+    !sourceExists() && map().addSource(props.id, data);
   });
 
   // Update
   createEffect(() => {
-    const impl = map().getSource(id);
+    const impl = map().getSource(props.id);
 
     if (impl.type === "raster" && props.type === "raster") {
       // TODO
@@ -55,9 +45,9 @@ export const Source: Component<mapboxgl.AnySourceData & ParentProps> = (props) =
   onCleanup(() => {
     map()
       .getStyle()
-      .layers.forEach((layer) => layer.type !== "custom" && layer.source === id && map().removeLayer(layer.id));
-    sourceExists() && map().removeSource(id);
+      .layers.forEach((layer) => layer.type !== "custom" && layer.source === props.id && map().removeLayer(layer.id));
+    sourceExists() && map().removeSource(props.id);
   });
 
-  return <SourceContext.Provider value={id}>{props.children}</SourceContext.Provider>;
+  return <SourceContext.Provider value={props.id}>{props.children}</SourceContext.Provider>;
 };
