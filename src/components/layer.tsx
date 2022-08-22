@@ -1,7 +1,7 @@
 import { onCleanup, createEffect, createUniqueId, onMount, splitProps } from "solid-js";
 import { useMap } from "./map";
 import { useSourceId } from "./source";
-import { MappedEventHandlers } from "../utils";
+import { diff, MappedEventHandlers } from "../utils";
 import mapboxgl from "mapbox-gl";
 
 type LayerEventHandlers = MappedEventHandlers<mapboxgl.MapLayerEventType>;
@@ -106,13 +106,4 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
   });
 
   return <></>;
-};
-
-const diff = <T,>(current: T, prev: T) => {
-  const keys = [...new Set([...Object.keys(current), ...Object.keys(prev)])] as (keyof T)[];
-  return keys.reduce((acc, key) => {
-    const value = current[key];
-    value !== prev[key] && acc.push([key as string, value]);
-    return acc;
-  }, new Array<[string, T[keyof T]]>());
 };

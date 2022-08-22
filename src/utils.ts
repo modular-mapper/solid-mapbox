@@ -14,3 +14,13 @@ export type NestedKeys<T> = (
 ) extends infer D
   ? Extract<D, string>
   : never;
+
+/** Returns an array of key-value pair for non-matching properties for the given two objects. */
+export const diff = <T>(current: T, prev: T) => {
+  const keys = [...new Set([...Object.keys(current), ...Object.keys(prev)])] as (keyof T)[];
+  return keys.reduce((acc, key) => {
+    const value = current[key];
+    value !== prev[key] && acc.push([key as string, value]);
+    return acc;
+  }, new Array<[string, T[keyof T]]>());
+};
