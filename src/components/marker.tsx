@@ -14,10 +14,10 @@ import type { MarkerOptions, LngLatLike } from "mapbox-gl";
   */
 
 interface MarkerProps {
+  children?: Element;
   options?: Omit<MarkerOptions, "element">;
   lngLat: LngLatLike;
   popup?: Element;
-  children?: HTMLElement;
   onDragStart?: mapboxgl.EventedListener;
   onDrag?: mapboxgl.EventedListener;
   onDragEnd?: mapboxgl.EventedListener;
@@ -29,7 +29,7 @@ export const Marker: Component<MarkerProps> = (props) => {
 
   // Add Marker
   onMount(() => {
-    marker = new mapboxgl.Marker({ ...props.options, element: props.children })
+    marker = new mapboxgl.Marker({ ...props.options, element: props.children as HTMLElement })
       .setLngLat(props.lngLat)
       .setPopup(props.popup ? new mapboxgl.Popup({ offset: 20 }).setDOMContent(props.popup as Node) : undefined)
       .addTo(map());
