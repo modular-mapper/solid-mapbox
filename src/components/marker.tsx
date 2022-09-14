@@ -1,19 +1,10 @@
-import { onCleanup, createEffect, Component, createContext, useContext, createUniqueId } from "solid-js";
+import { onCleanup, createEffect, Component, onMount } from "solid-js";
 import { useMap } from "./map";
 import mapboxgl from "mapbox-gl";
 import type { MarkerOptions, LngLatLike } from "mapbox-gl";
 
-export const Marker: Component<{
-  options?: MarkerOptions;
-  lngLat: LngLatLike;
-  children?: any;
-  popUp?: Element;
-}> = (props) => {
-  const map = useMap();
-  let marker: mapboxgl.Marker;
-
-  //TODO overhaul Marker system
-  /*
+//TODO overhaul Marker system
+/*
     <marker>
       {markerStuff}
       <popup>
@@ -21,15 +12,41 @@ export const Marker: Component<{
       </popup>
     </marker>
   */
+
+interface MarkerProps {
+  options?: Omit<MarkerOptions, "element">;
+  lngLat: LngLatLike;
+  popup?: Element;
+  children?: HTMLElement;
+  onDragStart?: mapboxgl.EventedListener;
+  onDrag?: mapboxgl.EventedListener;
+  onDragEnd?: mapboxgl.EventedListener;
+}
+
+export const Marker: Component<MarkerProps> = (props) => {
+  const map = useMap();
+  let marker: mapboxgl.Marker;
+
   // Add Marker
-  createEffect(() => {
-    marker = new mapboxgl.Marker({...props.options, element: props.children})
+  onMount(() => {
+    marker = new mapboxgl.Marker({ ...props.options, element: props.children })
       .setLngLat(props.lngLat)
-      .setPopup(props.popUp ? new mapboxgl.Popup({offset: 20}).setDOMContent((props.popUp) as Node) : undefined)
+      .setPopup(props.popup ? new mapboxgl.Popup({ offset: 20 }).setDOMContent(props.popup as Node) : undefined)
       .addTo(map());
   });
-  // Remove Marker
-  onCleanup(() => marker.remove());
+
+  createEffect(() => {
+    props.onDragStart && marker.on("dragstart", props.onDragStart);
+    props.onDrag && marker.on("drag", props.onDrag);
+    props.onDragEnd && marker.on("dragend", props.onDragEnd);
+  });
+
+  onCleanup(() => {
+    props.onDragStart && marker.off("dragstart", props.onDragStart);
+    props.onDrag && marker.off("drag", props.onDrag);
+    props.onDragEnd && marker.off("dragend", props.onDragEnd);
+    marker.remove();
+  });
 
   // Update Position
   createEffect(() => marker && marker.setLngLat(props.lngLat));
