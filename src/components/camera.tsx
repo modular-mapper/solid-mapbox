@@ -41,7 +41,7 @@
 //   };
 //   children?: any;
 // }> = (props) => {
-//   const map = useMap();
+//   const { map } = useMap();
 //   let animationTime = 0.1;
 //   let isReverse = false;
 

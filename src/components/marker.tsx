@@ -24,7 +24,7 @@ interface MarkerProps {
 }
 
 export const Marker: Component<MarkerProps> = (props) => {
-  const map = useMap();
+  const { map } = useMap();
   let marker: mapboxgl.Marker;
 
   // Add Marker
@@ -32,7 +32,7 @@ export const Marker: Component<MarkerProps> = (props) => {
     marker = new mapboxgl.Marker({ ...props.options, element: props.children as HTMLElement })
       .setLngLat(props.lngLat)
       .setPopup(props.popup ? new mapboxgl.Popup({ offset: 20 }).setDOMContent(props.popup as Node) : undefined)
-      .addTo(map());
+      .addTo(map);
   });
 
   createEffect(() => {

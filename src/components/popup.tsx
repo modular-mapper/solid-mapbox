@@ -8,7 +8,7 @@ export const Popup: Component<{
   lngLat: LngLatLike;
   children?: any;
 }> = (props) => {
-  const map = useMap();
+  const { map } = useMap();
   let popup: mapboxgl.Popup;
 
   // Add Popup
@@ -16,7 +16,7 @@ export const Popup: Component<{
     popup = new mapboxgl.Popup(props.options)
       .setLngLat(props.lngLat)
       .setDOMContent((<div>{props.children}</div>) as Node)
-      .addTo(map());
+      .addTo(map);
   });
 
   // Remove Popup

@@ -18,15 +18,15 @@ interface LayerProps extends Partial<LayerEventHandlers> {
 
 export const Layer = <T extends LayerType>(props: T & LayerProps) => {
   const [_, style] = splitProps(props, ["before", "featureState", "filter"]) as [any, T];
-  const map = useMap();
+  const { map } = useMap();
   const source = useSourceId();
-  const layerExists = () => map().getLayer(props.id) !== undefined;
+  const layerExists = () => map.getLayer(props.id) !== undefined;
 
   // Add Layer
   onMount(() => {
     if (layerExists()) return;
 
-    map().addLayer(
+    map.addLayer(
       {
         ...style,
         id: props.id,
@@ -37,32 +37,32 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
   });
 
   // Remove Layer
-  onCleanup(() => layerExists() && map().removeLayer(props.id));
+  onCleanup(() => layerExists() && map.removeLayer(props.id));
 
   // Hook up events
   createEffect(() => {
     (Object.keys(props).filter((key) => key.startsWith("on")) as (keyof LayerProps)[]).forEach((key) => {
       const event = key.slice(2).toLowerCase() as keyof mapboxgl.MapLayerEventType;
       const callback = props[key] as any;
-      map().on(event, props.id, callback);
-      onCleanup(() => map().off(event, props.id, callback));
+      map.on(event, props.id, callback);
+      onCleanup(() => map.off(event, props.id, callback));
     });
   });
 
   // Update Style
   createEffect((prev?: typeof style) => {
-    if (!style || !map().getStyle() || !map().getSource(source) || !layerExists()) return;
+    if (!style || !map.getStyle() || !map.getSource(source) || !layerExists()) return;
     if (!prev) return style;
 
     if (style.type !== "custom" && prev.type !== "custom") {
       (["layout", "paint"] as (keyof typeof style)[]).forEach((target) => {
         if (style[target] && prev[target] && style[target] !== prev[target]) {
-          diff(style[target], prev[target]).forEach(([key, value]) => map().setLayoutProperty(props.id, key, value));
+          diff(style[target], prev[target]).forEach(([key, value]) => map.setLayoutProperty(props.id, key, value));
         }
       });
 
       if (style.minzoom !== prev.minzoom || style.maxzoom !== prev.maxzoom) {
-        map().setLayerZoomRange(props.id, style.minzoom ?? 0, style.maxzoom ?? 22);
+        map.setLayerZoomRange(props.id, style.minzoom ?? 0, style.maxzoom ?? 22);
       }
     }
 
@@ -81,8 +81,8 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
   createEffect(async () => {
     if (!props.filter) return;
 
-    !map().isStyleLoaded() && (await map().once("styledata"));
-    map().setFilter(props.id, props.filter);
+    !map.isStyleLoaded() && (await map.once("styledata"));
+    map.setFilter(props.id, props.filter);
   });
 
   // Update Feature State
@@ -90,12 +90,12 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
     if (!props.featureState || !props.featureState.id || source === "") return;
 
     // await style if necessary
-    !map().isStyleLoaded() && (await map().once("styledata"));
+    !map.isStyleLoaded() && (await map.once("styledata"));
 
     const sourceLayer = "source-layer" in props ? props["source-layer"] : undefined;
 
-    map().removeFeatureState({ source, sourceLayer });
-    map().setFeatureState(
+    map.removeFeatureState({ source, sourceLayer });
+    map.setFeatureState(
       {
         source: source,
         sourceLayer,

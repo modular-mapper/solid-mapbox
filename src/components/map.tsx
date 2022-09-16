@@ -43,14 +43,22 @@ export interface MapProps extends Pick<ComponentProps<"div">, ContainerProps>, P
   };
 }
 
-const MapContext = createContext((() => {}) as Accessor<mapboxgl.Map>);
+interface MapContext {
+  map: mapboxgl.Map;
+  useMapEvent: <T extends keyof mapboxgl.MapEventType>(
+    type: T,
+    listener: (ev: mapboxgl.MapEventType[T] & mapboxgl.EventData) => void
+  ) => void;
+}
+
+const mapContext = createContext({} as MapContext);
 /** Provides the Mapbox Map Object */
-export const useMap = () => useContext(MapContext);
+export const useMap = () => useContext(mapContext);
 
 /** Creates a new Map Container */
 export const MapBox: Component<MapProps> = (props) => {
   props.id = props.id || createUniqueId();
-  const [mapbox, setMapbox] = createSignal<mapboxgl.Map>();
+  const [_map, setMap] = createSignal<mapboxgl.Map>();
 
   const debug = (text: string, value: unknown) => props.debug && console.debug(`${text}: %c${value}`, "color: #00F");
 
@@ -64,7 +72,7 @@ export const MapBox: Component<MapProps> = (props) => {
 
   onMount(() => {
     const map = new mapboxgl.Map({ ...props.options, container });
-    map.once("load").then(() => setMapbox(map));
+    map.once("load").then(() => setMap(map));
 
     // Listen to map container size changes
     const resizer = new ResizeObserver(() => map.resize());
@@ -126,10 +134,21 @@ export const MapBox: Component<MapProps> = (props) => {
     }, props.options?.style);
   });
 
+  /** Subscribes the provided listener function to the given map event. Cleanup is handled automatically. */
+  const useMapEvent: MapContext["useMapEvent"] = (type, listener) => {
+    const map = _map();
+    if (!map) throw new Error("Map not initialized");
+
+    onMount(() => map.on(type, listener));
+    onCleanup(() => map.off(type, listener));
+
+    return map;
+  };
+
   return (
     <>
-      <Show when={mapbox()}>
-        <MapContext.Provider value={mapbox as Accessor<mapboxgl.Map>}>{props.children}</MapContext.Provider>
+      <Show when={_map()}>
+        {(map) => <mapContext.Provider value={{ map, useMapEvent }}>{props.children}</mapContext.Provider>}
       </Show>
       <div
         ref={container}
