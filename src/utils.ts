@@ -15,8 +15,30 @@ export type NestedKeys<T> = (
   ? Extract<D, string>
   : never;
 
+export type Cursor =
+  | "alias"
+  | "all-scroll"
+  | "auto"
+  | "default"
+  | "help"
+  | "pointer"
+  | "wait"
+  | "text"
+  | "move"
+  | "not-allowed"
+  | "grab"
+  | "grabbing"
+  | "zoom-in"
+  | "zoom-out"
+  | "col-resize"
+  | "row-resize"
+  | "n-resize"
+  | "e-resize"
+  | "s-resize"
+  | "w-resize";
+
 /** Returns an array of key-value pair for non-matching properties for the given two objects. */
-export const diff = <T>(current: T, prev: T) => {
+export const diff = <T extends {}>(current: T, prev: T) => {
   const keys = [...new Set([...Object.keys(current), ...Object.keys(prev)])] as (keyof T)[];
   return keys.reduce((acc, key) => {
     const value = current[key];

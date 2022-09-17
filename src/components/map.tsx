@@ -11,7 +11,7 @@ import {
   JSX,
 } from "solid-js";
 import mapboxgl from "mapbox-gl";
-import { MappedEventHandlers } from "../utils";
+import { Cursor, MappedEventHandlers } from "../utils";
 import type { ComponentProps, Component } from "solid-js";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -49,6 +49,7 @@ interface MapContext {
     type: T,
     listener: (ev: mapboxgl.MapEventType[T] & mapboxgl.EventData) => void
   ) => void;
+  setCursor(value: Cursor): void;
 }
 
 const mapContext = createContext({} as MapContext);
@@ -145,10 +146,18 @@ export const MapBox: Component<MapProps> = (props) => {
     return map;
   };
 
+  /** Sets the cursor style for the map container element. */
+  const setCursor: MapContext["setCursor"] = (value) => {
+    const map = _map();
+    if (!map) return;
+
+    map.getCanvas().style.cursor = value;
+  };
+
   return (
     <>
       <Show when={_map()}>
-        {(map) => <mapContext.Provider value={{ map, useMapEvent }}>{props.children}</mapContext.Provider>}
+        {(map) => <mapContext.Provider value={{ map, useMapEvent, setCursor }}>{props.children}</mapContext.Provider>}
       </Show>
       <div
         ref={container}
