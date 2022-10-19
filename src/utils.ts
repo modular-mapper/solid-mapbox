@@ -15,19 +15,27 @@ export type NestedKeys<T> = (
   ? Extract<D, string>
   : never;
 
+// type of all possible cursors
+
 export type Cursor =
+  | "auto"
   | "alias"
   | "all-scroll"
-  | "auto"
   | "default"
+  | "crosshair"
+  | "copy"
   | "help"
   | "pointer"
-  | "wait"
+  | "progress"
   | "text"
   | "move"
+  | "none"
+  | "no-drop"
   | "not-allowed"
   | "grab"
   | "grabbing"
+  | "cell"
+  | "wait"
   | "zoom-in"
   | "zoom-out"
   | "col-resize"
@@ -35,7 +43,15 @@ export type Cursor =
   | "n-resize"
   | "e-resize"
   | "s-resize"
-  | "w-resize";
+  | "w-resize"
+  | "ne-resize"
+  | "nw-resize"
+  | "se-resize"
+  | "sw-resize"
+  | "ew-resize"
+  | "ns-resize"
+  | "nesw-resize"
+  | "nwse-resize";
 
 /** Returns an array of key-value pair for non-matching properties for the given two objects. */
 export const diff = <T extends {}>(current: T, prev: T) => {
