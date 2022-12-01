@@ -1,25 +1,25 @@
-import { onCleanup, Component, ParentProps, onMount } from "solid-js";
+import MapboxGL from "mapbox-gl";
+import { Component, onCleanup, onMount, ParentProps } from "solid-js";
 import { useMap } from "./map";
-import MBX from "mapbox-gl";
 
 const CONTROLS = {
-  attribution: MBX.AttributionControl,
-  fullscreen: MBX.FullscreenControl,
-  geolocate: MBX.GeolocateControl,
-  navigation: MBX.NavigationControl,
-  scale: MBX.ScaleControl,
+  attribution: MapboxGL.AttributionControl,
+  fullscreen: MapboxGL.FullscreenControl,
+  geolocate: MapboxGL.GeolocateControl,
+  navigation: MapboxGL.NavigationControl,
+  scale: MapboxGL.ScaleControl,
 };
 
 type ControlType = keyof typeof CONTROLS;
 
 interface ControlProps<T extends ControlType> extends ParentProps {
   options?: ConstructorParameters<typeof CONTROLS[T]>[0];
-  position?: Parameters<MBX.Map["addControl"]>[1];
+  position?: Parameters<MapboxGL.Map["addControl"]>[1];
 }
 
 type ControlComponent<T extends ControlType> = Component<ControlProps<T>>;
 
-const createControl = <T extends ControlType>(type: ControlType): ControlComponent<T> => {
+function createControl<T extends ControlType>(type: ControlType): ControlComponent<T> {
   return (props) => {
     const { map } = useMap();
     const control = new CONTROLS[type]();
@@ -32,7 +32,7 @@ const createControl = <T extends ControlType>(type: ControlType): ControlCompone
 
     return props.children;
   };
-};
+}
 
 export const Control = {
   Attribution: createControl("attribution"),

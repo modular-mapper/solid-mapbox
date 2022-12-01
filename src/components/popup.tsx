@@ -1,13 +1,14 @@
-import { onCleanup, createEffect, Component } from "solid-js";
-import { useMap } from "./map";
+import type { LngLatLike, PopupOptions } from "mapbox-gl";
 import mapboxgl from "mapbox-gl";
-import type { PopupOptions, LngLatLike } from "mapbox-gl";
+import { createEffect, onCleanup, ParentProps } from "solid-js";
+import { useMap } from "./map";
 
-export const Popup: Component<{
+interface PopupProps extends ParentProps {
   options?: PopupOptions;
   lngLat: LngLatLike;
-  children?: any;
-}> = (props) => {
+}
+
+export function Popup(props: PopupProps) {
   const { map } = useMap();
   let popup: mapboxgl.Popup;
 
@@ -29,4 +30,4 @@ export const Popup: Component<{
   createEffect(() => popup && popup.setDOMContent((<div>{props.children}</div>) as Node));
 
   return <></>;
-};
+}

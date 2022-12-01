@@ -1,8 +1,8 @@
-import { onCleanup, createEffect, createUniqueId, onMount, splitProps } from "solid-js";
+import mapboxgl from "mapbox-gl";
+import { createEffect, onCleanup, onMount, splitProps } from "solid-js";
+import { diff, MappedEventHandlers } from "../utils";
 import { useMap } from "./map";
 import { useSourceId } from "./source";
-import { diff, MappedEventHandlers } from "../utils";
-import mapboxgl from "mapbox-gl";
 
 type LayerEventHandlers = MappedEventHandlers<mapboxgl.MapLayerEventType>;
 
@@ -16,7 +16,7 @@ interface LayerProps extends Partial<LayerEventHandlers> {
   filter?: any[];
 }
 
-export const Layer = <T extends LayerType>(props: T & LayerProps) => {
+export function Layer<T extends LayerType>(props: T & LayerProps) {
   const [_, style] = splitProps(props, ["before", "featureState", "filter"]) as [any, T];
   const { map } = useMap();
   const source = useSourceId();
@@ -72,11 +72,9 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
   // Update Visibility
   // createEffect((prev: boolean) => {
   //   if (props.visible === undefined || props.visible === prev || !map().getSource(sourceId) || !layerExists()) return;
-
   //   map().setLayoutProperty(props.id, "visibility", props.visible ? "visible" : "none", { validate: false });
   //   return props.visible;
   // }, props.visible);
-
   // Update Filter
   createEffect(async () => {
     if (!props.filter) return;
@@ -106,4 +104,4 @@ export const Layer = <T extends LayerType>(props: T & LayerProps) => {
   });
 
   return <></>;
-};
+}

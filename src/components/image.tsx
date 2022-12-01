@@ -1,23 +1,14 @@
-import { onCleanup, createEffect, Component } from "solid-js";
+import { createEffect, onCleanup } from "solid-js";
 import { useMap } from "./map";
 
-type Image =
-  | HTMLImageElement
-  | ImageBitmap
-  | ImageData
-  | ArrayBufferView
-  | {
-      width: number;
-      height: number;
-      data: Uint8Array | Uint8ClampedArray;
-    };
-
-export const Image: Component<{
+interface ImageProps {
   id: string;
   url?: string;
-  image: Image;
+  image: Parameters<mapboxgl.Map["updateImage"]>[1];
   options?: { pixelRatio?: number | undefined; sdf?: boolean | undefined };
-}> = (props) => {
+}
+
+export function Image(props: ImageProps) {
   const { map } = useMap();
   // Add Image
   createEffect(() => {
@@ -47,4 +38,4 @@ export const Image: Component<{
   });
 
   return <></>;
-};
+}

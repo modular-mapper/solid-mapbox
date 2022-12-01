@@ -23,7 +23,7 @@ interface MarkerProps {
   onDragEnd?: mapboxgl.EventedListener;
 }
 
-export const Marker: Component<MarkerProps> = (props) => {
+export function Marker(props: MarkerProps) {
   const { map } = useMap();
   let marker: mapboxgl.Marker;
 
@@ -52,4 +52,4 @@ export const Marker: Component<MarkerProps> = (props) => {
   createEffect(() => marker && marker.setLngLat(props.lngLat));
 
   return <></>;
-};
+}

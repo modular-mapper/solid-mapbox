@@ -57,7 +57,7 @@ const mapContext = createContext({} as MapContext);
 export const useMap = () => useContext(mapContext);
 
 /** Creates a new Map Container */
-export const MapBox: Component<MapProps> = (props) => {
+export function MapBox(props: MapProps) {
   props.id = props.id || createUniqueId();
   const [_map, setMap] = createSignal<mapboxgl.Map>();
 
@@ -70,7 +70,6 @@ export const MapBox: Component<MapProps> = (props) => {
   // ? style.split(":").reduce((p, c) => p[c], VECTOR_STYLES) || style
   // : style || { version: 8, sources: {}, layers: [] };
   // };
-
   onMount(() => {
     const map = new mapboxgl.Map({ ...props.options, container });
     map.once("load").then(() => setMap(map));
@@ -168,4 +167,4 @@ export const MapBox: Component<MapProps> = (props) => {
       />
     </>
   );
-};
+}

@@ -1,13 +1,15 @@
-import { onCleanup, createEffect, Component } from "solid-js";
+import { TerrainSpecification } from "mapbox-gl";
+import { createEffect, onCleanup } from "solid-js";
 import { useMap } from "./map";
 import { useSourceId } from "./source";
-import { TerrainSpecification } from "mapbox-gl";
 
-export const Terrain: Component<{
+interface TerrainProps {
   style: TerrainSpecification;
   visible?: boolean;
   children?: any;
-}> = (props) => {
+}
+
+export function Terrain(props: TerrainProps) {
   const { map } = useMap();
   const sourceId = useSourceId();
 
@@ -23,4 +25,4 @@ export const Terrain: Component<{
   });
 
   return props.children;
-};
+}

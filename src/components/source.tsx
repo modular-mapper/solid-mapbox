@@ -1,8 +1,10 @@
-import { onCleanup, createEffect, Component, createContext, useContext, onMount, ParentProps } from "solid-js";
+import type MapboxGL from "mapbox-gl";
+import { createContext, createEffect, onCleanup, onMount, ParentProps, useContext } from "solid-js";
 import { useMap } from "./map";
-import type mapboxgl from "mapbox-gl";
 
-const DEFAULT_GEOJSON: mapboxgl.GeoJSONSourceRaw = {
+type SourceProps = MapboxGL.AnySourceData & ParentProps & { id: string };
+
+const DEFAULT_GEOJSON: MapboxGL.GeoJSONSourceRaw = {
   type: "geojson",
   data: {
     features: [],
@@ -13,7 +15,7 @@ const DEFAULT_GEOJSON: mapboxgl.GeoJSONSourceRaw = {
 const SourceContext = createContext("");
 export const useSourceId = () => useContext(SourceContext);
 
-export const Source: Component<mapboxgl.AnySourceData & ParentProps & { id: string }> = (props) => {
+export function Source(props: SourceProps) {
   const { map } = useMap();
   const sourceExists = () => map.getSource(props.id) !== undefined;
 
@@ -50,4 +52,4 @@ export const Source: Component<mapboxgl.AnySourceData & ParentProps & { id: stri
   });
 
   return <SourceContext.Provider value={props.id}>{props.children}</SourceContext.Provider>;
-};
+}

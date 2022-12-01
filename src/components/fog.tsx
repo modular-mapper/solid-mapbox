@@ -1,8 +1,8 @@
-import { onCleanup, createEffect, Component } from "solid-js";
+import type MapboxGL from "mapbox-gl";
+import { createEffect, onCleanup } from "solid-js";
 import { useMap } from "./map";
-import type MBX from "mapbox-gl";
 
-export const Fog: Component<MBX.Fog> = (props) => {
+export const Fog = (props: MapboxGL.Fog) => {
   const { map } = useMap();
 
   // Add Fog Layer
