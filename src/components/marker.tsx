@@ -1,4 +1,4 @@
-import { onCleanup, createEffect, Component, onMount } from "solid-js";
+import { onCleanup, createEffect, Component, onMount, JSX } from "solid-js";
 import { useMap } from "./map";
 import mapboxgl from "mapbox-gl";
 import type { MarkerOptions, LngLatLike } from "mapbox-gl";
@@ -14,7 +14,7 @@ import type { MarkerOptions, LngLatLike } from "mapbox-gl";
   */
 
 interface MarkerProps {
-  children?: Element;
+  children?: JSX.Element;
   options?: Omit<MarkerOptions, "element">;
   lngLat: LngLatLike;
   popup?: Element;
