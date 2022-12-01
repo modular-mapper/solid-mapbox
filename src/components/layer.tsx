@@ -1,14 +1,14 @@
-import mapboxgl from "mapbox-gl";
+import MapboxGL from "mapbox-gl";
 import { createEffect, onCleanup, onMount, splitProps } from "solid-js";
 import { diff, MappedEventHandlers } from "../utils";
 import { useMap } from "./map";
 import { useSourceId } from "./source";
 
-type LayerEventHandlers = MappedEventHandlers<mapboxgl.MapLayerEventType>;
+type LayerEventHandlers = MappedEventHandlers<MapboxGL.MapLayerEventType>;
 
 type PartialBy<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 type MapUnion<T, K extends keyof T> = T extends any ? PartialBy<T, K> : never;
-type LayerType = mapboxgl.AnyLayer;
+type LayerType = MapboxGL.AnyLayer;
 
 interface LayerProps extends Partial<LayerEventHandlers> {
   before?: string;
@@ -31,7 +31,7 @@ export function Layer<T extends LayerType>(props: T & LayerProps) {
         ...style,
         id: props.id,
         source,
-      } as mapboxgl.AnyLayer,
+      } as MapboxGL.AnyLayer,
       props.before
     );
   });
@@ -42,7 +42,7 @@ export function Layer<T extends LayerType>(props: T & LayerProps) {
   // Hook up events
   createEffect(() => {
     (Object.keys(props).filter((key) => key.startsWith("on")) as (keyof LayerProps)[]).forEach((key) => {
-      const event = key.slice(2).toLowerCase() as keyof mapboxgl.MapLayerEventType;
+      const event = key.slice(2).toLowerCase() as keyof MapboxGL.MapLayerEventType;
       const callback = props[key] as any;
       map.on(event, props.id, callback);
       onCleanup(() => map.off(event, props.id, callback));
@@ -55,11 +55,13 @@ export function Layer<T extends LayerType>(props: T & LayerProps) {
     if (!prev) return style;
 
     if (style.type !== "custom" && prev.type !== "custom") {
-      (["layout", "paint"] as (keyof typeof style)[]).forEach((target) => {
-        if (style[target] && prev[target] && style[target] !== prev[target]) {
-          diff(style[target], prev[target]).forEach(([key, value]) => map.setLayoutProperty(props.id, key, value));
-        }
-      });
+      if (style.layout && prev.layout && style.layout !== prev.layout) {
+        diff(style.layout, prev.layout).forEach(([key, value]) => map.setLayoutProperty(props.id, key, value));
+      }
+
+      if (style.paint && prev.paint && style.paint !== prev.paint) {
+        diff(style.paint, prev.paint).forEach(([key, value]) => map.setLayoutProperty(props.id, key, value));
+      }
 
       if (style.minzoom !== prev.minzoom || style.maxzoom !== prev.maxzoom) {
         map.setLayerZoomRange(props.id, style.minzoom ?? 0, style.maxzoom ?? 22);
